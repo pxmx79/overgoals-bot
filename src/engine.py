@@ -20,12 +20,7 @@ class ModelEngine:
     # ============================================================
     def compute_trends(self, match):
         """
-        Calcola la componente basata sui trend storici:
-        - Over 2.5 trend
-        - Over 1.5 HT trend
-        - BTTS trend
-        - Media gol
-        - Volatilità gol
+        Calcola la componente basata sui trend storici.
         """
 
         cfg = self.config["historical_data"]["weights"]
@@ -51,8 +46,7 @@ class ModelEngine:
     # ============================================================
     def compute_first_half_strength(self, match):
         """
-        Calcola la componente del primo tempo (OSS_1T),
-        fondamentale per i segnali Over 0.5 HT.
+        Calcola la componente del primo tempo (Over 0.5 HT).
         """
 
         cfg = self.config["markets"]["over_05_ht"]["weights"]
@@ -74,12 +68,7 @@ class ModelEngine:
     # ============================================================
     def compute_offensive_strength(self, match):
         """
-        Calcola la forza offensiva complessiva:
-        - xG for
-        - tiri totali
-        - attacchi pericolosi
-        - ritmo offensivo
-        - pressing (PPDA)
+        Calcola la forza offensiva generale.
         """
 
         cfg = self.config["advanced_stats"]["weights"]
@@ -105,12 +94,7 @@ class ModelEngine:
     # ============================================================
     def compute_defensive_leak(self, match):
         """
-        Calcola la vulnerabilità difensiva:
-        - xG Against
-        - tiri concessi
-        - media gol subiti
-        - BTTS difensivo
-        - PPDA difensivo invertito
+        Calcola la vulnerabilità difensiva.
         """
 
         cfg = self.config["advanced_stats"]["weights"]
@@ -136,10 +120,7 @@ class ModelEngine:
     # ============================================================
     def compute_volatility(self, match):
         """
-        Calcola la volatilità attesa del match:
-        - media gol negli H2H
-        - ritmo complessivo (pace factor)
-        - variabilità storica dei gol
+        Calcola la volatilità attesa del match.
         """
 
         h2h_avg = match.get("h2h_goals_avg", 0)
@@ -159,41 +140,58 @@ class ModelEngine:
     # ============================================================
     def compute_market_confirmation(self, match):
         """
-        Analizza i segnali del mercato pre-match:
+        Analizza i segnali del mercato:
         - drop percentuale della quota Over 2.5
-        - movimento Asian Line
-        - money flow sull'Over
+        - Asian line shift
+        - money flow
         """
 
         cfg = self.config["market_intelligence"]
 
         drop_percent = match.get("over25_drop_percent", 0)
-        asian_shift = match.get("asian_line_shift", 0)        # -1 / 0 / +1
-        money_flow = match.get("money_flow_over", 0)          # es: 0.62 = 62%
+        asian_shift = match.get("asian_line_shift", 0)
+        money_flow = match.get("money_flow_over", 0)
 
         score = 0.0
 
-        # 1) DROP QUOTA O2.5
         if drop_percent >= cfg["min_over25_drop_percent"]:
             score += drop_percent * cfg["weights"]["odds_drop"]
 
-        # 2) ASIAN LINE SHIFT
         score += asian_shift * cfg["weights"]["asian_line_shift"]
 
-        # 3) MONEY FLOW (se > 60%)
         if money_flow >= 0.60:
             score += cfg["weights"]["money_flow"]
 
         return round(score, 3)
 
     # ============================================================
-    #   AI PREDICTION LAYER — Step 9 (DA FARE)
+    #   AI PREDICTION LAYER — Step 9
     # ============================================================
     def compute_ai_prediction(self, match):
         """
-        Placeholder AI, verrà implementato nello Step 9.
+        Mini-modello predittivo che combina:
+        - xG for
+        - Over25 trend
+        - BTTS trend
+        - differenza xG
+        - volatilità
         """
-        return 0.0
+
+        xg_for = match.get("xg_for", 0)
+        xg_against = match.get("xg_against", 0)
+        over25_trend = match.get("over25_trend", 0)
+        btts_trend = match.get("btts_trend", 0)
+        vol = match.get("goals_volatility", 0)
+
+        score = (
+            xg_for * 0.40 +
+            over25_trend * 0.25 +
+            btts_trend * 0.15 +
+            (xg_for - xg_against) * 0.10 +
+            vol * 0.10
+        )
+
+        return round(score, 3)
 
     # ============================================================
     #   TOTAL SCORE (Formula Finale)
@@ -206,6 +204,7 @@ class ModelEngine:
         cfg = self.config["scoring_formula"]["weights"]
 
         oss_1t = self.compute_first_half_strength(match)
+        trends = self.compute_trends(match)
         oss = self.compute_offensive_strength(match)
         dls = self.compute_defensive_leak(match)
         vol = self.compute_volatility(match)
