@@ -30,14 +30,12 @@ class ModelEngine:
 
         cfg = self.config["historical_data"]["weights"]
 
-        # Ottieni i valori dal match (default 0 se assenti)
         over25 = match.get("over25_trend", 0)
         over15ht = match.get("over15ht_trend", 0)
         btts = match.get("btts_trend", 0)
         avg_goals = match.get("avg_goals", 0)
         vol = match.get("goals_volatility", 0)
 
-        # Calcolo score pesato
         score = (
             over25 * cfg["over25_trend"] +
             over15ht * cfg["over15ht_trend"] +
@@ -49,22 +47,20 @@ class ModelEngine:
         return round(score, 3)
 
     # ============================================================
-    #   FIRST HALF ENGINE (OSS_1T) — PRIORITARIO (Step 3)
+    #   FIRST HALF ENGINE (OSS_1T) — Step 3
     # ============================================================
     def compute_first_half_strength(self, match):
         """
-        Calcola la forza offensiva pre-match per il primo tempo (OSS_1T).
-        Modulo fondamentale per Over 0.5 HT.
+        Calcola la componente del primo tempo (OSS_1T),
+        fondamentale per i segnali Over 0.5 HT.
         """
 
         cfg = self.config["markets"]["over_05_ht"]["weights"]
 
-        # Estrarre i valori dal match (fallback 0)
-        trend_o05ht = match.get("trend_o05ht", 0)                 
-        xg_first_half = match.get("xg_first_half", 0)             
+        trend_o05ht = match.get("trend_o05ht", 0)
+        xg_first_half = match.get("xg_first_half", 0)
         h2h_first_half_goals = match.get("h2h_first_half_goals", 0)
 
-        # Calcolo punteggio pesato
         score = (
             trend_o05ht * cfg["trend_o05ht"] +
             xg_first_half * cfg["xg_first_half"] +
@@ -74,28 +70,26 @@ class ModelEngine:
         return round(score, 3)
 
     # ============================================================
-    #   OFFENSIVE STRENGTH (FULL MATCH) — Step 5
+    #   OFFENSIVE STRENGTH (OSS) — Step 5
     # ============================================================
     def compute_offensive_strength(self, match):
         """
-        Calcola la forza offensiva generale pre-match:
+        Calcola la forza offensiva complessiva:
         - xG for
         - tiri totali
         - attacchi pericolosi
         - ritmo offensivo
-        - pressing (PPDA inverso)
+        - pressing (PPDA)
         """
 
         cfg = self.config["advanced_stats"]["weights"]
 
-        # Estrazione valori dal match
         xg_for = match.get("xg_for", 0)
         shots = match.get("shots", 0)
         dangerous_attacks = match.get("dangerous_attacks", 0)
         pace = match.get("pace_factor", 0)
         ppda = match.get("ppda", 0)
 
-        # Calcolo OSS
         score = (
             xg_for * cfg["xg_for"] +
             shots * cfg["shots"] +
@@ -107,42 +101,66 @@ class ModelEngine:
         return round(score, 3)
 
     # ============================================================
-    #   DEFENSIVE LEAK SCORE — Step 6
+    #   DEFENSIVE LEAK SCORE (DLS) — Step 6
     # ============================================================
     def compute_defensive_leak(self, match):
         """
-        Calcola la propensione a subire gol (xGA, tiri concessi...).
+        Calcola la vulnerabilità difensiva:
+        - xG Against
+        - tiri concessi
+        - media gol subiti
+        - BTTS difensivo
+        - PPDA difensivo invertito
         """
-        # Verrà implementato nello Step 6
-        return 0.0
+
+        cfg = self.config["advanced_stats"]["weights"]
+
+        xga = match.get("xg_against", 0)
+        shots_conceded = match.get("shots_conceded", 0)
+        goals_conceded_avg = match.get("goals_conceded_avg", 0)
+        btts_trend = match.get("btts_trend", 0)
+        ppda = match.get("ppda", 0)
+
+        score = (
+            xga * cfg["xg_against"] +
+            shots_conceded * cfg["shots_conceded"] +
+            goals_conceded_avg +
+            (btts_trend * 0.50) +
+            ((1 - ppda) * cfg["ppda"])
+        )
+
+        return round(score, 3)
 
     # ============================================================
     #   VOLATILITY (MATCH-UP ENGINE) — Step 7
     # ============================================================
     def compute_volatility(self, match):
         """
-        Analizza volatilità del match (H2H, ritmo, variabilità gol).
+        Analizza volatilità del match:
+        - H2H gol
+        - ritmo
+        - variabilità gol
         """
-        # Verrà implementato nello Step 7
-        return 0.0
+        return 0.0  # da implementare nello Step 7
 
     # ============================================================
     #   MARKET CONFIRMATION (QUOTE) — Step 8
     # ============================================================
     def compute_market_confirmation(self, match):
         """
-        Valuta l'effetto dei movimenti quota pre-match (drop, Asian line).
+        Analizza i movimenti delle quote:
+        - drop Over 2.5
+        - Asian line
+        - money flow
         """
-        # Verrà implementato nello Step 8
-        return 0.0
+        return 0.0  # Step 8
 
     # ============================================================
     #   AI PREDICTION LAYER — Step 9
     # ============================================================
     def compute_ai_prediction(self, match):
         """
-        Placeholder per la logica AI.
-        Verrà implementato nello Step 9.
+        Placeholder AI, verrà implementato nello Step 9.
         """
         return 0.0
 
@@ -151,13 +169,11 @@ class ModelEngine:
     # ============================================================
     def compute_total_score(self, match):
         """
-        Combina tutti i moduli secondo i pesi definiti nel JSON.
-        È l'output principale del modello.
+        Combina tutti i moduli secondo i pesi nel JSON.
         """
 
         cfg = self.config["scoring_formula"]["weights"]
 
-        # calcolo moduli
         oss_1t = self.compute_first_half_strength(match)
         oss = self.compute_offensive_strength(match)
         dls = self.compute_defensive_leak(match)
