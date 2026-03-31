@@ -132,7 +132,7 @@ class ModelEngine:
         return round(score, 3)
 
     # ============================================================
-    #   VOLATILITY (MATCH-UP ENGINE) — Step 7
+    #   VOLATILITY ENGINE — Step 7
     # ============================================================
     def compute_volatility(self, match):
         """
@@ -155,19 +155,39 @@ class ModelEngine:
         return round(score, 3)
 
     # ============================================================
-    #   MARKET CONFIRMATION (QUOTE) — Step 8
+    #   MARKET CONFIRMATION — Step 8
     # ============================================================
     def compute_market_confirmation(self, match):
         """
-        Analizza i movimenti delle quote:
-        - drop Over 2.5
-        - Asian line shift
-        - money flow
+        Analizza i segnali del mercato pre-match:
+        - drop percentuale della quota Over 2.5
+        - movimento Asian Line
+        - money flow sull'Over
         """
-        return 0.0  # da implementare nello Step 8
+
+        cfg = self.config["market_intelligence"]
+
+        drop_percent = match.get("over25_drop_percent", 0)
+        asian_shift = match.get("asian_line_shift", 0)        # -1 / 0 / +1
+        money_flow = match.get("money_flow_over", 0)          # es: 0.62 = 62%
+
+        score = 0.0
+
+        # 1) DROP QUOTA O2.5
+        if drop_percent >= cfg["min_over25_drop_percent"]:
+            score += drop_percent * cfg["weights"]["odds_drop"]
+
+        # 2) ASIAN LINE SHIFT
+        score += asian_shift * cfg["weights"]["asian_line_shift"]
+
+        # 3) MONEY FLOW (se > 60%)
+        if money_flow >= 0.60:
+            score += cfg["weights"]["money_flow"]
+
+        return round(score, 3)
 
     # ============================================================
-    #   AI PREDICTION LAYER — Step 9
+    #   AI PREDICTION LAYER — Step 9 (DA FARE)
     # ============================================================
     def compute_ai_prediction(self, match):
         """
