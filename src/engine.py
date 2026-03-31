@@ -136,12 +136,23 @@ class ModelEngine:
     # ============================================================
     def compute_volatility(self, match):
         """
-        Analizza volatilità del match:
-        - H2H gol
-        - ritmo
-        - variabilità gol
+        Calcola la volatilità attesa del match:
+        - media gol negli H2H
+        - ritmo complessivo (pace factor)
+        - variabilità storica dei gol
         """
-        return 0.0  # da implementare nello Step 7
+
+        h2h_avg = match.get("h2h_goals_avg", 0)
+        pace = match.get("pace_factor", 0)
+        vol = match.get("goals_volatility", 0)
+
+        score = (
+            h2h_avg * 0.50 +
+            pace * 0.30 +
+            vol * 0.60
+        )
+
+        return round(score, 3)
 
     # ============================================================
     #   MARKET CONFIRMATION (QUOTE) — Step 8
@@ -150,10 +161,10 @@ class ModelEngine:
         """
         Analizza i movimenti delle quote:
         - drop Over 2.5
-        - Asian line
+        - Asian line shift
         - money flow
         """
-        return 0.0  # Step 8
+        return 0.0  # da implementare nello Step 8
 
     # ============================================================
     #   AI PREDICTION LAYER — Step 9
