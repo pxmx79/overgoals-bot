@@ -78,11 +78,33 @@ class ModelEngine:
     # ============================================================
     def compute_offensive_strength(self, match):
         """
-        Calcola la forza offensiva generale (xG, tiri, dangerous attacks).
-        Sarà implementato nello Step 5.
+        Calcola la forza offensiva generale pre-match:
+        - xG for
+        - tiri totali
+        - attacchi pericolosi
+        - ritmo offensivo
+        - pressing (PPDA inverso)
         """
-        # TODO: implementare nello Step 5
-        return 0.0
+
+        cfg = self.config["advanced_stats"]["weights"]
+
+        # Estrazione valori dal match
+        xg_for = match.get("xg_for", 0)
+        shots = match.get("shots", 0)
+        dangerous_attacks = match.get("dangerous_attacks", 0)
+        pace = match.get("pace_factor", 0)
+        ppda = match.get("ppda", 0)
+
+        # Calcolo OSS
+        score = (
+            xg_for * cfg["xg_for"] +
+            shots * cfg["shots"] +
+            dangerous_attacks * cfg["dangerous_attacks"] +
+            pace * cfg["pace_factor"] +
+            ppda * cfg["ppda"]
+        )
+
+        return round(score, 3)
 
     # ============================================================
     #   DEFENSIVE LEAK SCORE — Step 6
@@ -91,7 +113,7 @@ class ModelEngine:
         """
         Calcola la propensione a subire gol (xGA, tiri concessi...).
         """
-        # TODO: implementare nello Step 6
+        # Verrà implementato nello Step 6
         return 0.0
 
     # ============================================================
@@ -101,7 +123,7 @@ class ModelEngine:
         """
         Analizza volatilità del match (H2H, ritmo, variabilità gol).
         """
-        # TODO: implementare nello Step 7
+        # Verrà implementato nello Step 7
         return 0.0
 
     # ============================================================
@@ -111,7 +133,7 @@ class ModelEngine:
         """
         Valuta l'effetto dei movimenti quota pre-match (drop, Asian line).
         """
-        # TODO: implementare nello Step 8
+        # Verrà implementato nello Step 8
         return 0.0
 
     # ============================================================
