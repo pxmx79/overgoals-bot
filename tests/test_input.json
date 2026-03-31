@@ -1,1 +1,85 @@
+[
+  {
+    "home": "Al Hilal",
+    "away": "Al Nassr",
 
+    "trend_o05ht": 0.78,
+    "xg_first_half": 0.92,
+    "h2h_first_half_goals": 1.1,
+
+    "over25_trend": 0.68,
+    "over15ht_trend": 0.55,
+    "btts_trend": 0.62,
+    "avg_goals": 3.2,
+    "goals_volatility": 0.85,
+
+    "xg_for": 1.85,
+    "xg_against": 1.22,
+    "shots": 14,
+    "shots_conceded": 11,
+    "dangerous_attacks": 36,
+    "pace_factor": 0.78,
+    "ppda": 0.65,
+    "goals_conceded_avg": 1.3,
+
+    "h2h_goals_avg": 3.4,
+
+    "over25_drop_percent": 6,
+    "asian_line_shift": 1,
+    "money_flow_over": 0.66,
+
+    "odds_o05ht": 1.33,
+    "odds_o15ht": 2.05,
+    "odds_o25": 1.70,
+    "odds_btts": 1.82,
+
+    "markets": {
+      "over_05_ht": { "score_min": 0.75, "odds_min": 1.18, "odds_max": 1.55 },
+      "over_15_ht": { "oss_min": 4.8, "vol_min": 3.0, "odds_min": 1.80, "odds_max": 3.00 },
+      "over_25_ft": { "total_min": 7.2, "odds_min": 1.60, "odds_max": 2.10 },
+      "btts_ft":   { "dls_min": 4.2, "oss_min": 4.0, "odds_min": 1.60, "odds_max": 2.20 }
+    }
+  },
+
+  {
+    "home": "Milan",
+    "away": "Galatasaray",
+
+    "trend_o05ht": 0.65,
+    "xg_first_half": 0.74,
+    "h2h_first_half_goals": 0.9,
+
+    "over25_trend": 0.61,
+    "over15ht_trend": 0.52,
+    "btts_trend": 0.57,
+    "avg_goals": 2.9,
+    "goals_volatility": 0.72,
+
+    "xg_for": 1.45,
+    "xg_against": 1.18,
+    "shots": 12,
+    "shots_conceded": 10,
+    "dangerous_attacks": 28,
+    "pace_factor": 0.66,
+    "ppda": 0.58,
+    "goals_conceded_avg": 1.1,
+
+    "h2h_goals_avg": 2.8,
+
+    "over25_drop_percent": 3,
+    "asian_line_shift": 0,
+    "money_flow_over": 0.55,
+
+    "odds_o05ht": 1.40,
+    "odds_o15ht": 2.35,
+    "odds_o25": 1.85,
+    "odds_btts": 1.95,
+
+    "markets": {
+      "over_05_ht": { "score_min": 0.75, "odds_min": 1.18, "odds_max": 1.55 },
+      "over_15_ht": { "oss_min": 4.8, "vol_min": 3.0, "odds_min": 1.80, "odds_max": 3.00 },
+      "over_25_ft": { "total_min": 7.2, "odds_min": 1.60, "odds_max": 2.10 },
+      "btts_ft":   { "dls_min": 4.2, "oss_min": 4.0, "odds_min": 1.60, "odds_max": 2.20 }
+    }
+  }
+]
