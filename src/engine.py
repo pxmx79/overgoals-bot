@@ -60,9 +60,9 @@ class ModelEngine:
         cfg = self.config["markets"]["over_05_ht"]["weights"]
 
         # Estrarre i valori dal match (fallback 0)
-        trend_o05ht = match.get("trend_o05ht", 0)                 # es: 0.72 = 72%
-        xg_first_half = match.get("xg_first_half", 0)             # expected goals 1T
-        h2h_first_half_goals = match.get("h2h_first_half_goals", 0)  # media gol 1T negli H2H
+        trend_o05ht = match.get("trend_o05ht", 0)                 
+        xg_first_half = match.get("xg_first_half", 0)             
+        h2h_first_half_goals = match.get("h2h_first_half_goals", 0)
 
         # Calcolo punteggio pesato
         score = (
@@ -79,6 +79,7 @@ class ModelEngine:
     def compute_offensive_strength(self, match):
         """
         Calcola la forza offensiva generale (xG, tiri, dangerous attacks).
+        Sarà implementato nello Step 5.
         """
         # TODO: implementare nello Step 5
         return 0.0
@@ -119,9 +120,8 @@ class ModelEngine:
     def compute_ai_prediction(self, match):
         """
         Placeholder per la logica AI.
-        Verrà implementato verso la fine.
+        Verrà implementato nello Step 9.
         """
-        # TODO: implementare nello Step 9
         return 0.0
 
     # ============================================================
